@@ -63,9 +63,14 @@ namespace FSWP.Net
         private Socket _socket = null;
 
         /// <summary>
-        /// Signaling object used to notify when an asynchronous operation is completed
+        /// Signaling object used to notify when a sending asynchronous operation is completed
         /// </summary>
-        private static ManualResetEvent _clientDone = new ManualResetEvent(false);
+        private static ManualResetEvent _clientSendDone = new ManualResetEvent(false);
+
+        /// <summary>
+        /// Signaling object used to notify when a reading asynchronous operation is completed
+        /// </summary>
+        private static ManualResetEvent _clientReceiveDone = new ManualResetEvent(false);
 
         /// <summary>
         /// Duration of the timeout of an asynchronous call in milliseconds
@@ -119,12 +124,12 @@ namespace FSWP.Net
             socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
             {
                 result = e.SocketError.ToString();
-                _clientDone.Set();
+                _clientSendDone.Set();
             });
 
-            _clientDone.Reset();
+            _clientSendDone.Reset();
             _socket.ConnectAsync(socketEventArg);
-            _clientDone.WaitOne(_timeoutDuration);
+            _clientSendDone.WaitOne(_timeoutDuration);
 
             return result;
         }
@@ -132,9 +137,21 @@ namespace FSWP.Net
         /// <summary>
         /// Send the given data to the server using the established connection
         /// </summary>
-        /// <param name="data">The data to send to the server</param>
+        /// <param name="data">The data (in string) to send to the server</param>
         /// <returns>The result of the Send request</returns>
         public string Send(string data)
+        {
+            byte[] bytes = new Byte[data.Length];
+            Array.Copy(Encoding.UTF8.GetBytes(data), bytes, bytes.Length);
+            return Send(bytes);
+        }
+
+        /// <summary>
+        /// Send the given data to the server using the established connection
+        /// </summary>
+        /// <param name="data">The data (in bytes) to send to the server</param>
+        /// <returns>The result of the Send request</returns>
+        public string Send(byte[] data)
         {
             string response = ERROR_TIMEOUT;
 
@@ -146,15 +163,14 @@ namespace FSWP.Net
                 socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
                 {
                     response = e.SocketError.ToString();
-                    _clientDone.Set();
+                    _clientSendDone.Set();
                 });
 
-                byte[] payload = Encoding.UTF8.GetBytes(data);
-                socketEventArg.SetBuffer(payload, 0, payload.Length);
+                socketEventArg.SetBuffer(data, 0, data.Length);
 
-                _clientDone.Reset();
+                _clientSendDone.Reset();
                 _socket.SendAsync(socketEventArg);
-                _clientDone.WaitOne(_timeoutDuration);
+                _clientSendDone.WaitOne(_timeoutDuration);
             }
             else
                 response = ERROR_UNITIALIZED_SOCKET;
@@ -186,18 +202,56 @@ namespace FSWP.Net
                     else
                         response = e.SocketError.ToString();
 
-                    _clientDone.Set();
+                    _clientReceiveDone.Set();
                 });
 
-                _clientDone.Reset();
+                _clientReceiveDone.Reset();
                 _socket.ReceiveAsync(socketEventArg);
                 if (timeout)
-                    _clientDone.WaitOne(_timeoutDuration);
+                    _clientReceiveDone.WaitOne(_timeoutDuration);
                 else
-                    _clientDone.WaitOne();
+                {
+                    _clientReceiveDone.WaitOne();
+                }
             }
             else
                 response = ERROR_UNITIALIZED_SOCKET;
+
+            return response;
+        }
+
+        /// <summary>
+        /// Receive data (in bytes) from the server using the established socket connection
+        /// </summary>
+        /// <param name="timeout">timeout is enable ?</param>
+        /// <returns>The data received from the server</returns>
+        public byte[] ReceiveBytes(bool timeout = true)
+        {
+            byte[] response = { };
+
+            if (_socket != null)
+            {
+                SocketAsyncEventArgs socketEventArg = new SocketAsyncEventArgs();
+                socketEventArg.RemoteEndPoint = _socket.RemoteEndPoint;
+                socketEventArg.SetBuffer(new Byte[_maxBufferSize], 0, _maxBufferSize);
+                socketEventArg.Completed += new EventHandler<SocketAsyncEventArgs>(delegate(object s, SocketAsyncEventArgs e)
+                {
+                    if (e.SocketError == SocketError.Success)
+                    {
+                        response = new Byte[e.BytesTransferred];
+                        Array.Copy(e.Buffer, response, response.Length);
+                    }
+
+                    _clientReceiveDone.Set();
+                });
+
+                _clientReceiveDone.Reset();
+                _socket.ReceiveAsync(socketEventArg);
+                if (timeout)
+                    _clientReceiveDone.WaitOne(_timeoutDuration);
+                else
+                    _clientReceiveDone.WaitOne();
+            }
 
             return response;
         }
