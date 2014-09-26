@@ -82,6 +82,11 @@ namespace FSWP.Net
         /// </summary>
         public string ContentType { get; set; }
 
+        /// <summary>
+        /// Request caching is enabled
+        /// </summary>
+        public bool CacheEnabled { get; set; }
+
         private string _url;
         private eSendingMethod _method;
         private Dictionary<string, string> _parameters;
@@ -107,6 +112,7 @@ namespace FSWP.Net
             _method = method;
             _parameters = parameters;
             ContentType = contentType;
+            CacheEnabled = false;
         }
 
         /// <summary>
@@ -124,6 +130,7 @@ namespace FSWP.Net
             _method = method;
             _parameters = new Dictionary<string,string>();
             ContentType = "";
+            CacheEnabled = false;
         }
 
         #endregion
@@ -139,6 +146,8 @@ namespace FSWP.Net
             {
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(_url + PrepareData());
                 request.Method = "GET";
+                if (!CacheEnabled)
+                    DisableCache(request);
                 request.BeginGetResponse(EndResponse, request);
             }
             else
@@ -147,6 +156,8 @@ namespace FSWP.Net
                 request.Method = "POST";
                 if (ContentType != null && ContentType.Length > 0)
                     request.ContentType = ContentType;
+                if (!CacheEnabled)
+                    DisableCache(request);
                 request.BeginGetRequestStream(PrepareDataAsync, request);
             }
         }
@@ -172,6 +183,14 @@ namespace FSWP.Net
         #endregion
 
         #region Private
+
+        private void DisableCache(HttpWebRequest request)
+        {
+            if (request.Headers == null)
+                request.Headers = new WebHeaderCollection();
+            request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
+            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+        }
 
         private string PrepareData()
         {
@@ -255,8 +274,6 @@ namespace FSWP.Net
 
                     CallbackError(response);
                 }
-
-                return;
             }
         }
         

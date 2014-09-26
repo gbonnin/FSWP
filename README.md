@@ -12,7 +12,7 @@ The library contains different classes such as abstractions, managers or helpers
 * __Net__ - A set of classes to abstract network connections such as web requests or sockets
 * __Utils__ - A set of independent classes that will help you for various tasks
 
-> **Note:** FSWP library 0.2.1 is compatible with Windows Phone 7.1 and above.
+> **Note:** FSWP library 0.2.2 is compatible with Windows Phone 7.1 and above.
 > 
 > It requires Microsoft Visual Studio or VS Express for WP.
 
