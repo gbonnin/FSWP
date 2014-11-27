@@ -1,6 +1,6 @@
 ﻿//
 // FSWPSocketClientTCP.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class SocketClientTCP is compatible with Windows Phone 7.1 and above
 // It is an abstraction of the Socket class to connect a client in a TCP connection

@@ -1,6 +1,6 @@
 ﻿//
 // FSWPDeviceInformations.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPDeviceInformations is compatible with Windows Phone 7.1 and above
 // This class is used to get informations about device

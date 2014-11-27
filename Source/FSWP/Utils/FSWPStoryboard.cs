@@ -1,6 +1,6 @@
 ﻿//
 // FSWPStoryboard.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPStoryboard is compatible with Windows Phone 7.1 and above
 // This class is an abstraction of Storyboard class and provides simple ways to create animations

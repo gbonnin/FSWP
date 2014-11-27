@@ -1,6 +1,6 @@
 ﻿//
 // FSWPDefaultCellBinding.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPDefaultCellBinding is compatible with Windows Phone 7.1 and above
 // This class is the default binding of a cell (that's countains title, description and image)

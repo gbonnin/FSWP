@@ -1,6 +1,6 @@
 ﻿//
 // FSWPCurrentStateManager.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPCurrentStateManager is compatible with Windows Phone 7.1 and above
 // This class is used to manage the current state of the application (add, get...)

@@ -1,6 +1,6 @@
 ﻿//
 // FSWPWebRequest.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class WebRequestCallback is compatible with Windows Phone 7.1 and above
 // It is an abstraction of the HttpWebRequest class
@@ -244,36 +244,44 @@ namespace FSWP.Net
 
         private void EndResponse(IAsyncResult asyncResult)
         {
-            HttpWebRequest request = (HttpWebRequest)asyncResult.AsyncState;
             try
             {
-                WebResponse webResponse = request.EndGetResponse(asyncResult);
-
-                if (Callback != null)
+                HttpWebRequest request = (HttpWebRequest)asyncResult.AsyncState;
+                try
                 {
-                    Stream stream = webResponse.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(stream);
-                    string response = streamReader.ReadToEnd();
-                    stream.Close();
-                    streamReader.Close();
-                    webResponse.Close();
+                    WebResponse webResponse = request.EndGetResponse(asyncResult);
 
-                    Callback(response);
+                    if (Callback != null)
+                    {
+                        Stream stream = webResponse.GetResponseStream();
+                        StreamReader streamReader = new StreamReader(stream);
+                        string response = streamReader.ReadToEnd();
+                        stream.Close();
+                        streamReader.Close();
+                        webResponse.Close();
+
+                        Callback(response);
+                    }
+                }
+                catch (WebException e)
+                {
+                    if (CallbackError != null)
+                    {
+                        Stream stream = e.Response.GetResponseStream();
+                        StreamReader streamReader = new StreamReader(stream);
+                        string response = streamReader.ReadToEnd();
+                        stream.Close();
+                        streamReader.Close();
+                        e.Response.Close();
+
+                        CallbackError(response);
+                    }
                 }
             }
-            catch (WebException e)
+            catch
             {
                 if (CallbackError != null)
-                {
-                    Stream stream = e.Response.GetResponseStream();
-                    StreamReader streamReader = new StreamReader(stream);
-                    string response = streamReader.ReadToEnd();
-                    stream.Close();
-                    streamReader.Close();
-                    e.Response.Close();
-
-                    CallbackError(response);
-                }
+                    CallbackError("");
             }
         }
         

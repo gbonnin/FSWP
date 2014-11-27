@@ -1,6 +1,6 @@
 ﻿//
 // FSWPBooleanToVisibility.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPBooleanToVisibility is compatible with Windows Phone 7.1 and above
 // This class converts a boolean to visibility

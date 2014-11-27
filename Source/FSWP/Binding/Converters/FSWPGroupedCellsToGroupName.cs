@@ -1,6 +1,6 @@
 ﻿//
 // FSWPGroupedCellsToGroupName.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPGroupedCellsToGroupName is compatible with Windows Phone 7.1 and above
 // This class converts a list of GroupedCellBinding to a group name

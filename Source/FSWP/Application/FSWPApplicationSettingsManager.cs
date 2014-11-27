@@ -1,6 +1,6 @@
 ﻿//
 // FSWPApplicationSettingsManager.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPApplicationSettingsManager is compatible with Windows Phone 7.1 and above
 // This class is used to manage application settings (add, get...)

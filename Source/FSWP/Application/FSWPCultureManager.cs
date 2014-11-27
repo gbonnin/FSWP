@@ -1,6 +1,6 @@
 ﻿//
 // FSWPCultureManager.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPCultureManager is compatible with Windows Phone 7.1 and above
 // This class is used to manage culture and language of the application

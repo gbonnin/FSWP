@@ -1,6 +1,6 @@
 ﻿//
 // FSWPGroupedCellBinding.cs
-// FSWP Library
+// FSWP Toolkit
 //
 // The class FSWPGroupedCellBinding is compatible with Windows Phone 7.1 and above
 // This class is the binding for a basic cell in grouped list (longListSelector) (cell countains title, description and image)

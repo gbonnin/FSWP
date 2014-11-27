@@ -49,11 +49,13 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
     <Reference Include="mscorlib.extensions" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\FSWPApplicationSettingsManager.cs" />
     <Compile Include="Application\FSWPCultureManager.cs" />
     <Compile Include="Application\FSWPCurrentStateManager.cs" />
+    <Compile Include="Application\FSWPApplicationInformations.cs" />
     <Compile Include="Binding\Converters\FSWPBooleanToVisibility.cs" />
     <Compile Include="Binding\Converters\FSWPGroupedCellsToGroupName.cs" />
     <Compile Include="Binding\FSWPDefaultCellBinding.cs" />
