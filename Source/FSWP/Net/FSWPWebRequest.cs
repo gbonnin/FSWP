@@ -90,6 +90,9 @@ namespace FSWP.Net
         private string _url;
         private eSendingMethod _method;
         private Dictionary<string, string> _parameters;
+        private Dictionary<string, string> _headersString;
+        private Dictionary<HttpRequestHeader, string> _headers;
+
 
         #endregion
 
@@ -128,7 +131,7 @@ namespace FSWP.Net
             Callback = callback;
             CallbackError = callbackError;
             _method = method;
-            _parameters = new Dictionary<string,string>();
+            _parameters = new Dictionary<string, string>();
             ContentType = "";
             CacheEnabled = false;
         }
@@ -146,18 +149,16 @@ namespace FSWP.Net
             {
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(_url + PrepareData());
                 request.Method = "GET";
-                if (!CacheEnabled)
-                    DisableCache(request);
+                PrepareHeader(request);
                 request.BeginGetResponse(EndResponse, request);
             }
             else
             {
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(_url);
                 request.Method = "POST";
+                PrepareHeader(request);
                 if (ContentType != null && ContentType.Length > 0)
                     request.ContentType = ContentType;
-                if (!CacheEnabled)
-                    DisableCache(request);
                 request.BeginGetRequestStream(PrepareDataAsync, request);
             }
         }
@@ -180,16 +181,53 @@ namespace FSWP.Net
             _parameters.Clear();
         }
 
+        /// <summary>
+        /// Set an header param to the request
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void SetHeaderParam(string key, string value)
+        {
+            if (_headersString == null)
+                _headersString = new Dictionary<string, string>();
+            _headersString.Add(key, value);
+        }
+
+        /// <summary>
+        /// Set an header param to the request
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void SetHeaderParam(HttpRequestHeader key, string value)
+        {
+            if (_headers == null)
+                _headers = new Dictionary<HttpRequestHeader, string>();
+            _headers.Add(key, value);
+        }
+
         #endregion
 
         #region Private
 
-        private void DisableCache(HttpWebRequest request)
+        private void PrepareHeader(HttpWebRequest request)
         {
             if (request.Headers == null)
                 request.Headers = new WebHeaderCollection();
-            request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
-            request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            if (_headersString != null)
+            {
+                foreach (KeyValuePair<string, string> param in _headersString)
+                    request.Headers[param.Key] = param.Value;
+            }
+            if (_headers != null)
+            {
+                foreach (KeyValuePair<HttpRequestHeader, string> param in _headers)
+                    request.Headers[param.Key] = param.Value;
+            }
+            if (!CacheEnabled)
+            {
+                request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
+                request.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.UtcNow.ToString();
+            }
         }
 
         private string PrepareData()
