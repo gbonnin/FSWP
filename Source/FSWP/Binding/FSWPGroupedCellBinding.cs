@@ -24,6 +24,7 @@ namespace FSWP.Binding
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
@@ -139,24 +140,12 @@ namespace FSWP.Binding
         /// <returns>List of list of cells</returns>
         public static List<List<FSWPGroupedCellBinding>> GroupCell(IEnumerable<FSWPGroupedCellBinding> cells)
         {
+            var groupsNames = cells.Select(c => c.GroupName).Distinct();
             var groups = new List<List<FSWPGroupedCellBinding>>();
-            var group = new List<FSWPGroupedCellBinding>();
-            string sectionName = "";
-            foreach (FSWPGroupedCellBinding cell in cells)
+            foreach (var groupName in groupsNames)
             {
-                if (cell.GroupName != sectionName)
-                {
-                    if (group.Count > 0)
-                    {
-                        groups.Add(group);
-                        group = new List<FSWPGroupedCellBinding>();
-                    }
-                    sectionName = cell.GroupName;
-                }
-                group.Add(cell);
+                groups.Add(cells.Where(c => c.GroupName.Equals(groupName)).ToList());
             }
-            if (group.Count > 0)
-                groups.Add(group);
 
             return groups;
         }
