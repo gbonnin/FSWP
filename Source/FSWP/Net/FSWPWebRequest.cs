@@ -35,7 +35,8 @@ namespace FSWP.Net
     public enum eSendingMethod
     {
         GET,
-        POST
+        POST,
+        DELETE
     }
 
     /// <summary>
@@ -93,7 +94,6 @@ namespace FSWP.Net
         private Dictionary<string, string> _headersString;
         private Dictionary<HttpRequestHeader, string> _headers;
 
-
         #endregion
 
         #region Constructors
@@ -145,10 +145,10 @@ namespace FSWP.Net
         /// </summary>
         public void Begin()
         {
-            if (_method == eSendingMethod.GET)
+            if (_method == eSendingMethod.GET || _method == eSendingMethod.DELETE)
             {
                 HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(_url + PrepareData());
-                request.Method = "GET";
+                request.Method = (_method == eSendingMethod.GET) ? "GET" : "DELETE";
                 PrepareHeader(request);
                 request.BeginGetResponse(EndResponse, request);
             }
