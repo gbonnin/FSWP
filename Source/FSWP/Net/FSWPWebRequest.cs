@@ -58,7 +58,7 @@ namespace FSWP.Net
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public delegate string WebRequestSerializer(Dictionary<string, string> parameters);
+        public delegate string WebRequestSerializer(Dictionary<string, object> parameters);
 
         #region Properties
 
@@ -89,7 +89,7 @@ namespace FSWP.Net
 
         private string _url;
         private eSendingMethod _method;
-        private Dictionary<string, string> _parameters;
+        private Dictionary<string, object> _parameters;
         private Dictionary<string, string> _headersString;
         private Dictionary<HttpRequestHeader, string> _headers;
 
@@ -107,7 +107,7 @@ namespace FSWP.Net
         /// <param name="contentType">Type of content send</param>
         /// <param name="callback">Method called if web request success</param>
         /// <param name="callbackError">Method called if web request fails</param>
-        public FSWPWebRequest(string url, eSendingMethod method, Dictionary<string, string> parameters, string contentType, WebRequestCallback callback = null, WebRequestCallback callbackError = null)
+        public FSWPWebRequest(string url, eSendingMethod method, Dictionary<string, object> parameters, string contentType, WebRequestCallback callback = null, WebRequestCallback callbackError = null)
         {
             _url = url;
             Callback = callback;
@@ -131,7 +131,7 @@ namespace FSWP.Net
             Callback = callback;
             CallbackError = callbackError;
             _method = method;
-            _parameters = new Dictionary<string, string>();
+            _parameters = new Dictionary<string, object>();
             ContentType = "";
             CacheEnabled = false;
         }
@@ -168,7 +168,7 @@ namespace FSWP.Net
         /// </summary>
         /// <param name="key">Name of the parameter</param>
         /// <param name="value">Value of the parameter</param>
-        public void AddParameter(string key, string value)
+        public void AddParameter(string key, object value)
         {
             _parameters.Add(key, value);
         }
@@ -240,7 +240,7 @@ namespace FSWP.Net
                 else
                 {
                     bool first = true;
-                    foreach (KeyValuePair<string, string> pair in _parameters)
+                    foreach (KeyValuePair<string, object> pair in _parameters)
                     {
                         dataToSend += (first) ? "?" : "&";
                         dataToSend += pair.Key + "=" + pair.Value;
@@ -263,7 +263,7 @@ namespace FSWP.Net
                 else
                 {
                     bool first = true;
-                    foreach (KeyValuePair<string, string> pair in _parameters)
+                    foreach (KeyValuePair<string, object> pair in _parameters)
                     {
                         if (!first)
                             dataToSend += "&";
