@@ -32,6 +32,11 @@ namespace FSWP.Binding
         #region Properties
 
         /// <summary>
+        /// Index of the cell
+        /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
         /// Image of the cell
         /// </summary>
         public BitmapImage Image { get; set; }
@@ -58,10 +63,12 @@ namespace FSWP.Binding
         /// <summary>
         /// Creates a default cell binding with only title
         /// </summary>
+        /// <param name="index">Index of the cell</param>
         /// <param name="title">Title of the cell</param>
         /// <param name="backgroundColor">Background color of the cell (optional)</param>
-        public FSWPDefaultCellBinding(string title, SolidColorBrush backgroundColor = null)
+        public FSWPDefaultCellBinding(int index, string title, SolidColorBrush backgroundColor = null)
         {
+            Index = index;
             Title = title;
             if (backgroundColor != null)
                 BackgroundColor = backgroundColor;
@@ -72,12 +79,14 @@ namespace FSWP.Binding
         /// <summary>
         /// Creates a default cell binding with title, description and image
         /// </summary>
+        /// <param name="index">Index of the cell</param>
         /// <param name="title">Title of the cell</param>
         /// <param name="description">Description of the cell</param>
         /// <param name="image">Image of the cell</param>
         /// <param name="backgroundColor">Background color of the cell (optional)</param>
-        public FSWPDefaultCellBinding(string title, string description, BitmapImage image, SolidColorBrush backgroundColor = null)
+        public FSWPDefaultCellBinding(int index, string title, string description, BitmapImage image, SolidColorBrush backgroundColor = null)
         {
+            Index = index;
             Title = title;
             Description = description;
             Image = image;
@@ -90,13 +99,15 @@ namespace FSWP.Binding
         /// <summary>
         /// Creates a default cell binding with title, description and image
         /// </summary>
+        /// <param name="index">Index of the cell</param>
         /// <param name="title">Title of the cell</param>
         /// <param name="description">Description of the cell</param>
         /// <param name="imageUri">Uri of image of the cell</param>
         /// <param name="imageUriKind">Kind of uri of image</param>
         /// <param name="backgroundColor">Background color of the cell (optional)</param>
-        public FSWPDefaultCellBinding(string title, string description, string imageUri, UriKind imageUriKind, SolidColorBrush backgroundColor = null)
+        public FSWPDefaultCellBinding(int index, string title, string description, string imageUri, UriKind imageUriKind, SolidColorBrush backgroundColor = null)
         {
+            Index = index;
             Title = title;
             Description = description;
             Image = new BitmapImage(new Uri(imageUri, imageUriKind));

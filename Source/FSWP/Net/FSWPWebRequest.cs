@@ -24,6 +24,7 @@
 namespace FSWP.Net
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
@@ -51,7 +52,6 @@ namespace FSWP.Net
         /// </summary>
         /// <param name="response"></param>
         public delegate void WebRequestCallback(string response);
-
 
         /// <summary>
         /// Defines type of delegate for serialization of params
@@ -242,9 +242,22 @@ namespace FSWP.Net
                     bool first = true;
                     foreach (KeyValuePair<string, object> pair in _parameters)
                     {
-                        dataToSend += (first) ? "?" : "&";
-                        dataToSend += pair.Key + "=" + pair.Value;
-                        first = false;
+                        var list = pair.Value as IList;
+                        if (list != null)
+                        {
+                            foreach (object value in list)
+                            {
+                                dataToSend += (first) ? "?" : "&";
+                                dataToSend += pair.Key + "=" + value;
+                                first = false;
+                            }
+                        }
+                        else
+                        {
+                            dataToSend += (first) ? "?" : "&";
+                            dataToSend += pair.Key + "=" + pair.Value;
+                            first = false;
+                        }
                     }
                 }
             }
