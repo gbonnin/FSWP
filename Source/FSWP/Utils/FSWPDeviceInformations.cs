@@ -33,7 +33,8 @@ namespace FSWP.Utils
         /// Unique id of the device
         /// </summary>
         /// <returns></returns>
-        public static string UniqueId {
+        public static string UniqueId
+        {
             get {
                 byte[] deviceId = (byte[])DeviceExtendedProperties.GetValue("DeviceUniqueId");
                 return Convert.ToBase64String(deviceId);
@@ -41,10 +42,19 @@ namespace FSWP.Utils
         }
 
         /// <summary>
+        /// Current OS version installed on the device
+        /// </summary>
+        public static string OSVersion
+        {
+            get { return Environment.OSVersion.ToString(); }
+        }
+
+        /// <summary>
         /// Height screen of the device
         /// </summary>
         /// <returns></returns>
-        public static double HeightScreen {
+        public static double HeightScreen
+        {
             get { return Application.Current.Host.Content.ActualHeight; }
         }
 
@@ -52,7 +62,8 @@ namespace FSWP.Utils
         /// Width screen of the device
         /// </summary>
         /// <returns></returns>
-        public static double WidthScreen {
+        public static double WidthScreen
+        {
             get { return Application.Current.Host.Content.ActualWidth; }
         }
 
@@ -60,7 +71,8 @@ namespace FSWP.Utils
         /// Device has a 720p (or 1080p) resolution ?
         /// </summary>
         /// <returns></returns>
-        public static bool Is720P {
+        public static bool Is720P
+        {
             get { return (HeightScreen > 800); }
         }
     }
